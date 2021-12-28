@@ -1,6 +1,6 @@
 # PlantyBot 🌱
 
-- PlantyBot es un proyecto basado en un bot de Telegram programado para monitorear un sistema de riego a distancia el cual se basa en la humedad de suelo y la hora del día, creando alertas cuando la planta necesita ser regada. Este sistema esta desarrollado a través de IDE de Arduino._
+_PlantyBot es un proyecto basado en un bot de Telegram programado para monitorear un sistema de riego a distancia el cual se basa en la humedad de suelo y la hora del día, creando alertas cuando la planta necesita ser regada. Este sistema esta desarrollado a través de IDE de Arduino._
 
 ## Comenzando 🚀
 
