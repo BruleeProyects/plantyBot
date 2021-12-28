@@ -1,7 +1,7 @@
 /*
  Name:        plantyBot.ino
  Created:     05/12/2021
- Author:      Javiera Hormazábal <javiera.hormazabal9@gmail.com>
+ Author:      Javiera Hormazábal <contacto.javierahormazabal@gmail.com>
  Description: Planty es un sistema de riego automático en base a humedad de suelo y
               luz. Comunicado a distancia a través de NodeMCU y TelegramBot para 
               informes de necesidad de riego con espera de confirmación por parte del usuario.
@@ -10,9 +10,10 @@
 #include "CTBot.h"
 CTBot myBot;
 
-String ssid  = "HUAWEI Mate 20 lite"; // Nombre de red WiFi.
-String pass  = "javierah"; //Contraseña red WiFi.
-String token = "5000748142:AAFIWszYm4yFFajH6oJ4gtV6o4L-wISR8qs"; // Token bot Telegram.
+String ssid  = ""; // Nombre de red WiFi.
+String pass  = ""; //Contraseña red WiFi.
+String token = ""; // Token bot Telegram.
+String idChat= ""; // ID del chat con plantyBot desde Telegram
 const int ledRojo = 5;
 const int ledVerde = 4;
 const int higrometro = 16;
@@ -22,6 +23,7 @@ const int rele = 10;
 //Variables que almacenarán los valores del higrometro y fotoresistor.
 int humedad;
 int luz;
+
 //Variables booleanas para evitar constante envío de mensajes.
 bool pregunta = false;
 bool alertDia = false;
@@ -78,7 +80,7 @@ void loop() {
   
       //Solicita el riego al usuario, ciclo if asegura que solo se pregunte 1 vez.
       if(pregunta == false){
-        myBot.sendMessage(1615995844, "Hola! necesito que me riegen.  \nIngresa 2 si quieres que active el riego automático."); //Envío de mensaje al bot informando necesidad de riego.
+        myBot.sendMessage(idChat, "Hola! necesito que me riegen.  \nIngresa 2 si quieres que active el riego automático."); //Envío de mensaje al bot informando necesidad de riego.
 
         pregunta = true; //Evita que vuelva a preguntar lo mismo.
         alertDia = false;
@@ -94,7 +96,7 @@ void loop() {
           
             digitalWrite(ledVerde, LOW); 
             Serial.println("Regando...");
-            myBot.sendMessage(1615995844, "Regando..."); //Envío mensaje a telegram.
+            myBot.sendMessage(idChat, "Regando..."); //Envío mensaje a telegram.
             digitalWrite(ledRojo, HIGH); //Luz roja indica "Regando".
             digitalWrite(rele, LOW); //Bomba activada.
             delay(60000); //Riega por 1 min.
@@ -102,7 +104,7 @@ void loop() {
             digitalWrite(rele,HIGH); //Bomba desactivada.
             digitalWrite(ledRojo,LOW); //ya no riega.
             digitalWrite(ledVerde,HIGH); //En espera de siguiente lectura.
-            myBot.sendMessage(1615995844, "Riego finalizado exitosamente!");//Envío mensaje a Telegram.
+            myBot.sendMessage(idChat, "Riego finalizado exitosamente!");//Envío mensaje a Telegram.
             Serial.println("Riego finalizado existosamente.");
 
             //Reinicia todas las variables de verificación.
@@ -116,7 +118,7 @@ void loop() {
             //ciclo if asegura que solo se pregunte 1 vez.
             if(alertInv == false ){ 
               
-              myBot.sendMessage(1615995844, "Instrucción no válida."); //Envío mensaje a telegram.
+              myBot.sendMessage(idChat, "Instrucción no válida."); //Envío mensaje a telegram.
               alertInv = true; //Evita que vuelva a preguntar lo mismo.
               pregunta = false;
               alertDia = false;
@@ -128,7 +130,7 @@ void loop() {
       {
         if(alertDia == false ){
             
-            myBot.sendMessage(1615995844, "Hola! necesito que me rieges, pero aún es de día. \nEsperaré a que sea de noche."); //Envío mensaje a telegram.
+            myBot.sendMessage(idChat, "Hola! necesito que me rieges, pero aún es de día. \nEsperaré a que sea de noche."); //Envío mensaje a telegram.
             alertDia = true; //Evita que vuelva a preguntar lo mismo.
             pregunta = false;
             alertHum = false;
@@ -144,7 +146,7 @@ void loop() {
     else if(humedad == LOW){ //Si la humedad es adecuada.
   
       if(alertHum == false ){
-          myBot.sendMessage(1615995844, "Planta en óptimas condiciones."); //Envío mensaje a telegram.
+          myBot.sendMessage(idChat, "Planta en óptimas condiciones."); //Envío mensaje a telegram.
           
           alertHum = true; //Evita que vuelva a preguntar lo mismo.
           pregunta = false;
